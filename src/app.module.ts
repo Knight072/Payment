@@ -19,12 +19,12 @@ import configuration from './configuration';
     // Conexión a la base de datos
     TypeOrmModule.forRoot({
       type: 'postgres',
+      autoLoadEntities: true,
       host: process.env.DB_HOST,
       port: parseInt(process.env.DB_PORT ?? '5432', 10),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [__dirname + '/modules/**/*.entity{.ts,.js}'],
       synchronize: process.env.NODE_ENV !== 'production',
     }),
     // Módulos de la aplicación
