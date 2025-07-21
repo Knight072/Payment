@@ -3,8 +3,9 @@ export class Product {
     constructor(
         public readonly id: string,
         public name: string,
+        public description: string,
         public price: number,
-        public inStock: boolean = true,
+        public stock: boolean = true,
     ) { }
 
     /**
@@ -18,13 +19,13 @@ export class Product {
      * Marca el producto como agotado
      */
     markOutOfStock(): void {
-        this.inStock = false;
+        this.stock = false;
     }
 
     /**
      * Marca el producto como disponible
      */
     markInStock(): void {
-        this.inStock = true;
+        this.stock = true;
     }
 }

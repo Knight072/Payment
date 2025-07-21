@@ -11,11 +11,14 @@ export class ProductEntity {
     @Column({ type: 'varchar', length: 255 })
     name: string;
 
+    @Column({ type: 'varchar', length: 255 })
+    description: string;
+
     @Column({ type: 'decimal', precision: 12, scale: 2 })
     price: number;
 
-    @Column({ type: 'boolean', default: true })
-    inStock: boolean;
+    @Column({ type: 'integer', default: true })
+    stock: boolean;
 
     /**
      * Convierte la entidad a su modelo de dominio
@@ -24,8 +27,9 @@ export class ProductEntity {
         return new Product(
             entity.id,
             entity.name,
+            entity.description,
             Number(entity.price),
-            entity.inStock
+            entity.stock
         );
     }
 
@@ -36,8 +40,9 @@ export class ProductEntity {
         const entity = new ProductEntity();
         entity.id = product.id;
         entity.name = product.name;
+        entity.description = product.description;
         entity.price = product.price;
-        entity.inStock = product.inStock;
+        entity.stock = product.stock;
         return entity;
     }
 }
