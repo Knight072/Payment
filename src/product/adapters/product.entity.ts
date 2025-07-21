@@ -17,8 +17,8 @@ export class ProductEntity {
     @Column({ type: 'decimal', precision: 12, scale: 2 })
     price: number;
 
-    @Column({ type: 'integer', default: true })
-    stock: boolean;
+    @Column({ type: 'int', default: true })
+    stock: number;
 
     /**
      * Convierte la entidad a su modelo de dominio
