@@ -13,8 +13,8 @@ import { DeliveryModule } from '../delivery/delivery.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([TransactionEntity]),
-    CustomerModule,    // importa el módulo que exporta CustomerRepositoryPort
-    DeliveryModule,    // importa el módulo que exporta DeliveryRepositoryPort
+    CustomerModule,
+    DeliveryModule,    
   ],
   providers: [
     { provide: 'TransactionRepositoryPort', useClass: TransactionRepositoryAdapter },

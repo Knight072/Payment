@@ -1,13 +1,15 @@
 // src/modules/transaction/transaction.service.ts
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject } from '@nestjs/common';
 import { TransactionRepositoryPort } from './ports/transaction.repository.port';
 import { CustomerRepositoryPort } from '../customer/ports/customer.repository.port';
 import { DeliveryRepositoryPort } from '../delivery/ports/delivery.repository.port';
+import { ProductRepositoryPort } from '../product/ports/product.repository.port';
 import { Transaction } from './domain/transaction.model';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 import { CreateDeliveryDto } from '../delivery/dto/create-delivery.dto';
+import { UpdateProductDto } from '../product/dto/update-product.dto';
 
 //import { WompiService } from '../wompi/wompi.service';
 import { CreateCardTokenDto } from '../wompi/dto/create-card-token.dto';
@@ -24,6 +26,9 @@ export class TransactionService {
 
     @Inject('DeliveryRepositoryPort')
     private readonly deliveryRepo: DeliveryRepositoryPort,
+
+    @Inject('ProductRepositoryPort')
+    private readonly productRepo: ProductRepositoryPort,
 
     //private readonly wompiService: WompiService,
   ) { }
@@ -50,6 +55,23 @@ export class TransactionService {
    * Crea una nueva transacción y procesa el pago en Wompi
    */
   async create(dto: CreateTransactionDto) {
+    // 0) Validar y descontar stock de cada ítem
+    const allProducts = await this.productRepo.findAll();
+    for (const item of dto.items) {
+      const prod = allProducts.find(p => p.name === item.name);
+      if (!prod) {
+        throw new NotFoundException(`Producto "${item.name}" no encontrado`);
+      }
+      if (prod.stock < item.quantity) {
+        throw new BadRequestException(
+          `Stock insuficiente para "${item.name}". Disponible: ${prod.stock}`,
+        );
+      }
+      // Descontar stock
+      const updateDto: UpdateProductDto = { stock: prod.stock - item.quantity };
+      await this.productRepo.update(prod.id, updateDto);
+    }
+
     // 1) Crear (o actualizar) el cliente
     const customerDto = new CreateCustomerDto();
     customerDto.firstName = dto.firstName;
