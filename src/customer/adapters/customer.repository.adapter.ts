@@ -25,6 +25,11 @@ export class CustomerRepositoryAdapter implements CustomerRepositoryPort {
         return entity ? CustomerEntity.toDomain(entity) : null;
     }
 
+    async findByEmail(email: string): Promise<Customer | null> {
+        const e = await this.repo.findOne({ where: { email } });
+        return e ? CustomerEntity.toDomain(e) : null;
+    }
+
     async create(dto: CreateCustomerDto): Promise<Customer> {
         const entity = this.repo.create(dto);
         const saved = await this.repo.save(entity);

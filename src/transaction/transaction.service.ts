@@ -71,7 +71,7 @@ export class TransactionService {
     }
 
     // 1) Buscar o crear cliente
-    let customer = await this.customerRepo.findById(dto.document);
+    let customer = await this.customerRepo.findByEmail(dto.customerEmail);
     if (!customer) {
       const customerDto = new CreateCustomerDto();
       customerDto.firstName = dto.firstName;
