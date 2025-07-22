@@ -6,6 +6,7 @@ import { ProductModule } from './product/product.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { CustomerModule } from './customer/customer.module';
 import { DeliveryModule } from './delivery/delivery.module';
+import { WompiModule } from './wompi/wompi-client-module';
 import configuration from './configuration';
 
 @Module({
@@ -32,6 +33,7 @@ import configuration from './configuration';
     TransactionModule,
     CustomerModule,
     DeliveryModule,
+    WompiModule
   ],
 })
 export class AppModule {}
