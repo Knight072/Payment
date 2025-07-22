@@ -2,24 +2,21 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CustomerController } from './customer.controller';
-import { CustomerService } from './customer.service';
-import { CustomerRepositoryAdapter } from './adapters/customer.repository.adapter';
-import { CustomerEntity } from './adapters/customer.entity';
+import { CustomerEntity }             from './adapters/customer.entity';
+import { CustomerRepositoryAdapter }  from './adapters/customer.repository.adapter';
+import { CustomerService }            from './customer.service';
+import { CustomerController }         from './customer.controller';
 
 @Module({
-  imports: [
-    // Registra la entidad Customer para TypeORM
-    TypeOrmModule.forFeature([CustomerEntity]),
+  imports: [ TypeOrmModule.forFeature([CustomerEntity]) ],
+  providers: [
+    { provide: 'CustomerRepositoryPort', useClass: CustomerRepositoryAdapter },
+    CustomerService,
   ],
   controllers: [CustomerController],
-  providers: [
-    CustomerService,
-    {
-      provide: 'CustomerRepositoryPort',
-      useClass: CustomerRepositoryAdapter,
-    },
+  exports: [
+    'CustomerRepositoryPort',
+    CustomerService,       // si otros servicios lo usan
   ],
-  exports: [],
 })
 export class CustomerModule {}
