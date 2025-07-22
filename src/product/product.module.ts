@@ -2,23 +2,23 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ProductController } from './product.controller';
-import { ProductService } from './product.service';
+import { ProductEntity }            from './adapters/product.entity';
 import { ProductRepositoryAdapter } from './adapters/product.repository.adapter';
-import { ProductEntity } from './adapters/product.entity';
+import { ProductService }           from './product.service';
+import { ProductController }        from './product.controller';
 
 @Module({
-  imports: [
-    // Registra la entidad para que TypeORM la gestione
-    TypeOrmModule.forFeature([ProductEntity]),
+  imports: [ TypeOrmModule.forFeature([ProductEntity]) ],
+  providers: [
+    // Define el puerto y su adaptador
+    { provide: 'ProductRepositoryPort', useClass: ProductRepositoryAdapter },
+    ProductService,
   ],
   controllers: [ProductController],
-  providers: [
+  exports: [
+    // Exporta el puerto para que otros módulos puedan usarlo
+    'ProductRepositoryPort',
     ProductService,
-    {
-      provide: 'ProductRepositoryPort',
-      useClass: ProductRepositoryAdapter
-    },
   ],
 })
-export class ProductModule { }
+export class ProductModule {}
