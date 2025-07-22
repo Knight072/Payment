@@ -1,48 +1,35 @@
-// src/modules/transaction/dto/create-transaction.dto.ts
 import { IsString, IsNotEmpty, IsNumber, IsDateString, IsIn, IsOptional } from 'class-validator';
 
 export class CreateTransactionDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsString() @IsNotEmpty()
   description: string;
 
   @IsNumber()
   amount: number;
 
-  @IsDateString()
+  @IsDateString() @IsNotEmpty()
   date: string;
 
-  @IsString()
-  @IsIn(['pending', 'completed', 'cancelled'])
+  @IsString() @IsIn(['pending', 'completed', 'cancelled'])
   status: 'pending' | 'completed' | 'cancelled';
 
-  @IsString()
+  @IsString() @IsNotEmpty()
   customerEmail: string;
 
-  @IsString()
-  @IsOptional()
+  /** Si ya tienes token de tarjeta */
+  @IsString() @IsOptional()
   cardToken?: string;
 
-  /**
-   * Si no tienes cardToken, envia estos datos para tokenizar:
-   */
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
+  /** Si envías los datos crudos para tokenizar */
+  @IsString() @IsNotEmpty() @IsOptional()
   cardNumber?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
+  @IsString() @IsNotEmpty() @IsOptional()
   cardCvc?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
+  @IsString() @IsNotEmpty() @IsOptional()
   cardExpMonth?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsOptional()
+  @IsString() @IsNotEmpty() @IsOptional()
   cardExpYear?: string;
 }

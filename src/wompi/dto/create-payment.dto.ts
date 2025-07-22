@@ -1,41 +1,34 @@
-// src/modules/wompi/dto/create-payment.dto.ts
 import {
-  IsNumber,
   IsString,
+  IsNumber,
   IsNotEmpty,
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class PaymentMethodDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsString() @IsNotEmpty()
   type: 'CARD';
 
-  @IsString()
-  @IsNotEmpty()
-  token: string;
+  @IsString() @IsNotEmpty()
+  token: string;        // id devuelto por tokenizeCard
 }
 
 export class CreatePaymentDto {
-  @IsString()
-  @IsNotEmpty()
+  @IsString() @IsNotEmpty()
   acceptance_token: string;
 
   @IsNumber()
   amount_in_cents: number;
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString() @IsNotEmpty()
   currency: 'COP' | 'USD';
 
-  @IsString()
-  @IsNotEmpty()
+  @IsString() @IsNotEmpty()
   customer_email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  reference: string;
+  @IsString() @IsNotEmpty()
+  reference: string;    // UUID generado por el backend
 
   @ValidateNested()
   @Type(() => PaymentMethodDto)
