@@ -5,7 +5,7 @@ import { Transaction } from './domain/transaction.model';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 
-import { WompiService } from '../wompi/wompi.service';
+//import { WompiService } from '../wompi/wompi.service';
 import { CreateCardTokenDto } from '../wompi/dto/create-card-token.dto';
 import { CreatePaymentDto } from '../wompi/dto/create-payment.dto';
 
@@ -15,7 +15,7 @@ export class TransactionService {
     @Inject('TransactionRepositoryPort')
     private readonly transactionRepo: TransactionRepositoryPort,
 
-    private readonly wompiService: WompiService,
+    //private readonly wompiService: WompiService,
   ) { }
 
   /**
@@ -47,7 +47,7 @@ export class TransactionService {
     });
 
     // 2) Obtener acceptance_token
-    const acceptanceToken = await this.wompiService.getAcceptanceToken();
+    /*const acceptanceToken = await this.wompiService.getAcceptanceToken();
 
     // 3) Tokenizar tarjeta si no viene cardToken
     let cardToken = dto.cardToken;
@@ -85,11 +85,13 @@ export class TransactionService {
     }
 
     // 6) Actualizar estado según la respuesta
-    const status = resp.data.status.toLowerCase();
-    return this.transactionRepo.update(
+    const status = resp.data.status.toLowerCase();*/
+    const updated = await this.transactionRepo.update(
       pending.id,
-      { status } as UpdateTransactionDto,
+      { status: 'completed' } as UpdateTransactionDto,
     );
+
+    return updated;
   }
 
   /**

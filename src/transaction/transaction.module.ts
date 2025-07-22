@@ -1,7 +1,7 @@
 // src/modules/transaction/transaction.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { WompiModule } from '../wompi/wompi-client.module';
+//import { WompiModule } from '../wompi/wompi-client.module';
 
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
@@ -12,7 +12,7 @@ import { TransactionEntity } from './adapters/transaction.entity';
     imports: [
         // Registra la entidad para que TypeORM la gestione
         TypeOrmModule.forFeature([TransactionEntity]),
-        WompiModule,
+        //WompiModule,
     ],
     controllers: [TransactionController],
     providers: [
