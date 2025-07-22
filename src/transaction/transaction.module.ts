@@ -9,12 +9,14 @@ import { TransactionController }        from './transaction.controller';
 
 import { CustomerModule } from '../customer/customer.module';
 import { DeliveryModule } from '../delivery/delivery.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TransactionEntity]),
     CustomerModule,
-    DeliveryModule,    
+    DeliveryModule,
+    ProductModule,    
   ],
   providers: [
     { provide: 'TransactionRepositoryPort', useClass: TransactionRepositoryAdapter },
