@@ -1,6 +1,28 @@
-import { IsString, IsNotEmpty, IsNumber, IsDateString, IsIn, IsOptional } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  IsDateString,
+  IsIn,
+  IsOptional,
+  IsArray,
+  ValidateNested,
+  IsInt,
+  Min,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+
+// DTO para cada línea de ítem
+export class TransactionItemDto {
+  @IsString() @IsNotEmpty()
+  name: string;
+
+  @IsInt() @Min(1)
+  quantity: number;
+}
 
 export class CreateTransactionDto {
+  // Datos de la transacción
   @IsString() @IsNotEmpty()
   description: string;
 
@@ -13,14 +35,38 @@ export class CreateTransactionDto {
   @IsString() @IsIn(['pending', 'completed', 'cancelled'])
   status: 'pending' | 'completed' | 'cancelled';
 
+  // — Campos de cliente —
+  @IsString() @IsNotEmpty()
+  firstName: string;
+
+  @IsString() @IsNotEmpty()
+  lastName: string;
+
+  @IsString() @IsNotEmpty()
+  document: string;
+
+  @IsString() @IsOptional()
+  phone?: string;
+
   @IsString() @IsNotEmpty()
   customerEmail: string;
 
-  /** Si ya tienes token de tarjeta */
+  // — Campos de entrega —
+  @IsString() @IsNotEmpty()
+  address: string;
+
+  @IsDateString() @IsNotEmpty()
+  scheduledDate: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => TransactionItemDto)
+  items: TransactionItemDto[];
+
+  // — Datos de tarjeta opcionales (para cuando actives Wompi) —
   @IsString() @IsOptional()
   cardToken?: string;
 
-  /** Si envías los datos crudos para tokenizar */
   @IsString() @IsNotEmpty() @IsOptional()
   cardNumber?: string;
 

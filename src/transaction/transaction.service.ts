@@ -1,9 +1,13 @@
 // src/modules/transaction/transaction.service.ts
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { TransactionRepositoryPort } from './ports/transaction.repository.port';
+import { CustomerRepositoryPort } from '../customer/ports/customer.repository.port';
+import { DeliveryRepositoryPort } from '../delivery/ports/delivery.repository.port';
 import { Transaction } from './domain/transaction.model';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
+import { CreateDeliveryDto } from '../delivery/dto/create-delivery.dto';
 
 //import { WompiService } from '../wompi/wompi.service';
 import { CreateCardTokenDto } from '../wompi/dto/create-card-token.dto';
@@ -14,6 +18,12 @@ export class TransactionService {
   constructor(
     @Inject('TransactionRepositoryPort')
     private readonly transactionRepo: TransactionRepositoryPort,
+
+    @Inject('CustomerRepositoryPort')
+    private readonly customerRepo: CustomerRepositoryPort,
+
+    @Inject('DeliveryRepositoryPort')
+    private readonly deliveryRepo: DeliveryRepositoryPort,
 
     //private readonly wompiService: WompiService,
   ) { }
@@ -40,11 +50,28 @@ export class TransactionService {
    * Crea una nueva transacción y procesa el pago en Wompi
    */
   async create(dto: CreateTransactionDto) {
-    // 1) Guardar en BD como pending
+    // 1) Crear (o actualizar) el cliente
+    const customerDto = new CreateCustomerDto();
+    customerDto.firstName = dto.firstName;
+    customerDto.lastName = dto.lastName;
+    customerDto.email = dto.customerEmail;
+    customerDto.document = dto.document;
+    customerDto.phone = dto.phone;
+    const customer = await this.customerRepo.create(customerDto);
+
+    // 2) Guardar en BD como pending
     const pending = await this.transactionRepo.create({
       ...dto,
       status: 'pending',
     });
+
+    // 3) Crear la entrega asociada
+    const deliveryDto = new CreateDeliveryDto();
+    deliveryDto.orderId = pending.id;
+    deliveryDto.address = dto.address;
+    deliveryDto.scheduledDate = dto.scheduledDate;
+    deliveryDto.status = 'pending';
+    const delivery = await this.deliveryRepo.create(deliveryDto);
 
     // 2) Obtener acceptance_token
     /*const acceptanceToken = await this.wompiService.getAcceptanceToken();
