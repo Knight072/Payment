@@ -55,7 +55,7 @@ export class TransactionService {
    * Crea una nueva transacción y procesa el pago en Wompi
    */
   async create(dto: CreateTransactionDto) {
-    // 0) Validar y descontar stock de cada ítem
+    // 0) Validar y descontar stock...
     const allProducts = await this.productRepo.findAll();
     for (const item of dto.items) {
       const prod = allProducts.find(p => p.name === item.name);
@@ -67,19 +67,20 @@ export class TransactionService {
           `Stock insuficiente para "${item.name}". Disponible: ${prod.stock}`,
         );
       }
-      // Descontar stock
-      const updateDto: UpdateProductDto = { stock: prod.stock - item.quantity };
-      await this.productRepo.update(prod.id, updateDto);
+      await this.productRepo.update(prod.id, { stock: prod.stock - item.quantity } as UpdateProductDto);
     }
 
-    // 1) Crear (o actualizar) el cliente
-    const customerDto = new CreateCustomerDto();
-    customerDto.firstName = dto.firstName;
-    customerDto.lastName = dto.lastName;
-    customerDto.email = dto.customerEmail;
-    customerDto.document = dto.document;
-    customerDto.phone = dto.phone;
-    const customer = await this.customerRepo.create(customerDto);
+    // 1) Buscar o crear cliente
+    let customer = await this.customerRepo.findById(dto.document);
+    if (!customer) {
+      const customerDto = new CreateCustomerDto();
+      customerDto.firstName = dto.firstName;
+      customerDto.lastName = dto.lastName;
+      customerDto.email = dto.customerEmail;
+      customerDto.document = dto.document;
+      customerDto.phone = dto.phone;
+      customer = await this.customerRepo.create(customerDto);
+    }
 
     // 2) Guardar en BD como pending
     const pending = await this.transactionRepo.create({
