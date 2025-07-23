@@ -1,98 +1,280 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🏦 Wompi Payment API — Backend NestJS  
+_Proyecto Full‑Stack de prueba_
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![Nest & PostgreSQL](https://img.shields.io/badge/NestJS-v10-E0234E?logo=nestjs)
+![Postgres](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)
+![Docker Compose](https://img.shields.io/badge/Docker‑Compose-1.29-blue?logo=docker)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## Índice
+1. [Arquitectura](#arquitectura)
+2. [Estructura de carpetas](#estructura-de-carpetas)
+3. [Requisitos previos](#requisitos-previos)
+4. [Configuración rápida](#configuración-rápida)
+5. [Arranque en Docker](#arranque-en-docker)
+6. [Flujo de pago con Wompi](#flujo-de-pago-con-wompi)
+7. [Colección cURL / Postman](#colección-curl--postman)
+8. [Tareas npm](#tareas-npm)
+9. [Migraciones y seeds](#migraciones-y-seeds)
+10. [Pruebas y calidad](#pruebas-y-calidad)
+11. [Licencia](#licencia)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+---
 
-## Project setup
+## Arquitectura
+
+```mermaid
+flowchart LR
+    subgraph Hexagonal
+        A[Controllers] -->|DTO| B(Use Cases)
+        B -->|Ports| C{{Repositorios}}
+        B -->|Ports| D(Wompi Service)
+        C -->|Adapters| E[(PostgreSQL)]
+        D -->|HTTP REST| F[Wompi Sandbox]
+    end
+    classDef box fill:#f6f6f6,stroke:#ccc,stroke-width:1px
+    class A,B,C,D,E,F box
+
+---
+
+## Estructura de carpetas
+
+```text
+src/
+ ├─ modules/
+ │   ├─ product/
+ │   ├─ transaction/
+ │   ├─ customer/
+ │   ├─ delivery/
+ │   └─ wompi/
+ │       ├─ adapters/
+ │       ├─ dto/
+ │       ├─ ports/
+ │       ├─ wompi.service.ts
+ │       └─ wompi.module.ts
+ ├─ app.module.ts
+ └─ main.ts
+
+
+## Requisitos previos
+
+| Herramienta   | Versión mínima |
+|---------------|----------------|
+| **Docker**    | 20.10 |
+| **Docker Compose** | 1.29 |
+| **Node.js** (opcional para desarrollo local) | 18 LTS |
+| **Git**       | 2.30 |
+
+> Si usas Docker para todo, **Node** y **PostgreSQL** locales no son necesarios.
+
+---
+
+## Configuración rápida
 
 ```bash
-$ npm install
+# 1. Clona el proyecto
+git clone https://github.com/<tu‑usuario>/payment-api.git
+cd payment-api
+
+# 2. Copia y edita variables de entorno
+cp .env.example .env        # Rellena llaves y credenciales
+
+# 3. Arranca todo con Docker
+docker-compose up -d --build
+
+
+# Construir y levantar en segundo plano
+docker-compose up -d --build         
+
+# Seguir logs de la API Nest
+docker-compose logs -f api           
+
+# (Opcional) ejecutar migraciones
+docker-compose exec api npm run migration:run
+# 🏦 Wompi Payment API — Backend NestJS  
+_Proyecto Full‑Stack de prueba_
+
+![Nest & PostgreSQL](https://img.shields.io/badge/NestJS-v10-E0234E?logo=nestjs)
+![Postgres](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)
+![Docker Compose](https://img.shields.io/badge/Docker-Compose-1.29-blue?logo=docker)
+
+---
+
+## Índice
+1. [Arquitectura](#arquitectura)  
+2. [Estructura de carpetas](#estructura-de-carpetas)  
+3. [Requisitos previos](#requisitos-previos)  
+4. [Configuración rápida](#configuración-rápida)  
+5. [Arranque en Docker](#arranque-en-docker)  
+6. [Flujo de pago con Wompi](#flujo-de-pago-con-wompi)  
+7. [Colección cURL / Postman](#colección-curl--postman)  
+8. [Tareas npm](#tareas-npm)  
+9. [Migraciones y seeds](#migraciones-y-seeds)  
+10. [Pruebas y calidad](#pruebas-y-calidad)  
+11. [Licencia](#licencia)
+
+---
+
+## Arquitectura
+
+```mermaid
+flowchart LR
+    subgraph Hexagonal
+        A[Controllers] -->|DTO| B(Use Cases)
+        B -->|Ports| C{{Repositorios}}
+        B -->|Ports| D(Wompi Service)
+        C -->|Adapters| E[(PostgreSQL)]
+        D -->|HTTP REST| F[Wompi Sandbox]
+    end
+    classDef box fill:#f6f6f6,stroke:#ccc,stroke-width:1px
+    class A,B,C,D,E,F box
 ```
 
-## Compile and run the project
+- **Hexagonal / Ports & Adapters**: cada módulo (product, transaction, etc.) mantiene las carpetas domain, dto, ports y adapters.
+- **WompiModule** encapsula toda la integración externa.
+- **PostgreSQL 15** corre en su propio contenedor (db).
+- **Docker multi-stage** compila TypeScript y genera una imagen ultraligera.
+
+## Estructura de carpetas
+
+```
+src/
+ ├─ modules/
+ │   ├─ product/
+ │   ├─ transaction/
+ │   ├─ customer/
+ │   ├─ delivery/
+ │   └─ wompi/
+ │       ├─ adapters/
+ │       ├─ dto/
+ │       ├─ ports/
+ │       ├─ wompi.service.ts
+ │       └─ wompi.module.ts
+ ├─ app.module.ts
+ └─ main.ts
+```
+
+## Requisitos previos
+
+| Herramienta | Versión mínima |
+|-------------|----------------|
+| Docker | 20.10 |
+| Docker Compose | 1.29 |
+| Node.js (opcional) | 18 LTS |
+| Git | 2.30 |
+
+> Si usas Docker para todo, Node y Postgres locales no son necesarios.
+
+## Configuración rápida
 
 ```bash
-# development
-$ npm run start
+git clone https://github.com/<tu-usuario>/payment-api.git
+cd payment-api
 
-# watch mode
-$ npm run start:dev
+# Variables de entorno
+cp .env.example .env             # Rellena llaves y credenciales
 
-# production mode
-$ npm run start:prod
+# Arranque
+docker-compose up -d --build
 ```
 
-## Run tests
+Abre `http://localhost:3000/health` y verás:
+
+```json
+{"status":"ok"}
+```
+
+## Arranque en Docker
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose up -d --build      # Crea y levanta api_1 + db_1
+docker-compose logs -f api        # Sigue logs de Nest
+docker-compose exec api npm run migration:run  # Ejecutar migraciones
 ```
 
-## Deployment
+| Servicio | Puerto |
+|----------|--------|
+| API Nest | 3000 |
+| PostgreSQL | 5432 |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Flujo de pago con Wompi
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```mermaid
+sequenceDiagram
+  participant Front
+  participant API
+  participant Wompi
+  Front->>API: POST /transactions + datos tarjeta
+  API->>Wompi: GET /merchants → acceptance_token
+  API->>Wompi: POST /tokens/cards → card_token
+  API->>Wompi: POST /transactions (pago)
+  Wompi-->>API: status = PENDING
+  API-->>Front: respuesta pending
+  Wompi-->>API: webhook /webhooks/wompi (APPROVED)
+  API-->>API: actualiza BD → approved
+```
+
+## Colección cURL / Postman
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# 1️⃣ Tokenizar tarjeta
+curl -X POST "$WOMPI_BASE_URL/tokens/cards" \
+  -H "Authorization: Bearer $WOMPI_PUBLIC_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"number":"4242424242424242","cvc":"123","exp_month":"12","exp_year":"25","card_holder":"Test"}'
+
+# 2️⃣ Crear transacción vía backend
+curl -X POST http://localhost:3000/transactions \
+  -H "Content-Type: application/json" \
+  -d '{
+        "description":"Venta Demo",
+        "amount":25000,
+        "customerEmail":"test@ejemplo.com",
+        "cardToken":"tok_test_ABC123..."
+      }'
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+> Importa `docs/postman_collection.json` para probar todos los endpoints en Postman.
 
-## Resources
+## Tareas npm
 
-Check out a few resources that may come in handy when working with NestJS:
+| Comando | Descripción |
+|---------|-------------|
+| `npm run start:dev` | Hot-reload con ts-node-dev |
+| `npm run build` | Compila TypeScript a dist/ |
+| `npm run lint` | ESLint + Prettier |
+| `npm run test` | Unit + e2e tests (Jest) |
+| `npm run migration:run` | Ejecuta migraciones TypeORM |
+| `npm run seed` | Seeds de demostración |
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Migraciones y seeds
 
-## Support
+```bash
+docker-compose exec api npm run migration:generate -- -n init   # Crear migración
+docker-compose exec api npm run migration:run                   # Aplicarlas
+docker-compose exec api npm run seed                            # Insertar demo
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Pruebas y calidad
 
-## Stay in touch
+- **Jest + Supertest** para unitarias y e2e
+- **ESLint & Prettier** con husky + lint‑staged en pre‑commit
+- **(Opcional)** SonarQube / SonarCloud para cobertura y análisis estático
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Licencia
 
-## License
+MIT License - Ver [LICENSE](LICENSE) para más detalles.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+sequenceDiagram
+  participant Front
+  participant API
+  participant Wompi
+  Front->>API: POST /transactions + datos tarjeta
+  API->>Wompi: GET /merchants → acceptance_token
+  API->>Wompi: POST /tokens/cards → card_token
+  API->>Wompi: POST /transactions
+  Wompi-->>API: status = PENDING
+  API-->>Front: JSON (pending)
+  Wompi-->>API: webhook /webhooks/wompi (APPROVED)
+  API-->>API: actualiza BD → approved

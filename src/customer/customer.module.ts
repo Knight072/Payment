@@ -16,7 +16,7 @@ import { CustomerController }         from './customer.controller';
   controllers: [CustomerController],
   exports: [
     'CustomerRepositoryPort',
-    CustomerService,       // si otros servicios lo usan
+    CustomerService,     
   ],
 })
 export class CustomerModule {}
