@@ -212,7 +212,6 @@ Nuestro pipeline de calidad incluye:
 | **Jest** + **Supertest** | Unitarias y End‑to‑End | `npm run test` |
 | **ts‑jest** | Transpilación TypeScript en tests | autom. |
 | **eslint** + **prettier** | Estilo y reglas estáticas | `npm run lint` |
-| **husky** / **lint‑staged** | Ejecuta `lint` + `test` antes de cada commit | ganchos Git |
 | **coverage** | Informe Cobertura → `coverage/lcov-report` | `npm run test:cov` |
 
 > Ejecución típica en CI  
@@ -220,10 +219,4 @@ Nuestro pipeline de calidad incluye:
 
 ### Interpretar resultados
 
-```txt
-Test Suites: 2 failed, 27 passed, 29 total
-Tests:       3 failed, 157 passed, 160 total
-
-## Licencia
-
-MIT License - Ver [LICENSE](LICENSE) para más detalles.
+![alt text](image.png)
