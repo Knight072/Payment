@@ -18,7 +18,6 @@ _Proyecto Full‑Stack de prueba_
 8. [Tareas npm](#tareas-npm)  
 9. [Migraciones y seeds](#migraciones-y-seeds)  
 10. [Pruebas y calidad](#pruebas-y-calidad)  
-11. [Licencia](#licencia)
 
 ---
 
