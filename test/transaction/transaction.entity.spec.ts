@@ -6,7 +6,7 @@ describe('TransactionEntity mapping', () => {
 
   const entitySample: TransactionEntity = {
     id: 'cb8ce749-1a69-470c-9f4c-0b1e1bea4e2c',
-    description: 'Taza Wompi×1',
+    description: 'Taza W×1',
     amount: 32000,
     date: mockDate,
     status: 'completed',

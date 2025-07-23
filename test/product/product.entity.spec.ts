@@ -4,7 +4,7 @@ import { Product } from '../../src/product/domain/product.model'
 describe('ProductEntity mapping', () => {
   const entitySample: ProductEntity = {
     id:          'f88f7d0e-793b-4902-b3bb-d2b7d2f4e123',
-    name:        'Taza Wompi',
+    name:        'Taza W',
     description: 'Taza mágica color negro',
     price:       25000,
     stock:       5,

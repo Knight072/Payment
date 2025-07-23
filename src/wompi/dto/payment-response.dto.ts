@@ -5,6 +5,6 @@ export interface PaymentResponse {
     amount_in_cents: number;
     reference: string;
     payment_method_type: string;
-    // …otros campos del payload de Wompi
+    // …otros campos del payload de W
   };
 }

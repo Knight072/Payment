@@ -1,4 +1,4 @@
-# 🏦 Wompi Payment API — Backend NestJS  
+# 🏦 Payment API — Backend NestJS  
 _Proyecto Full‑Stack de prueba_
 
 ![Nest & PostgreSQL](https://img.shields.io/badge/NestJS-v10-E0234E?logo=nestjs)
@@ -13,7 +13,7 @@ _Proyecto Full‑Stack de prueba_
 3. [Requisitos previos](#requisitos-previos)  
 4. [Configuración rápida](#configuración-rápida)  
 5. [Arranque en Docker](#arranque-en-docker)  
-6. [Flujo de pago con Wompi](#flujo-de-pago-con-wompi)  
+6. [Flujo de pago](#flujo-de-pago)  
 7. [Colección cURL / Postman](#colección-curl--postman)  
 8. [Tareas npm](#tareas-npm)  
 9. [Migraciones y seeds](#migraciones-y-seeds)  
@@ -29,18 +29,57 @@ flowchart LR
     subgraph Hexagonal
         A[Controllers] -->|DTO| B(Use Cases)
         B -->|Ports| C{{Repositorios}}
-        B -->|Ports| D(Wompi Service)
+        B -->|Ports| D(W Service)
         C -->|Adapters| E[(PostgreSQL)]
-        D -->|HTTP REST| F[Wompi Sandbox]
+        D -->|HTTP REST| F[W Sandbox]
     end
     classDef box fill:#f6f6f6,stroke:#ccc,stroke-width:1px
     class A,B,C,D,E,F box
+```
+```mermaid
+erDiagram
+    product {
+        UUID      id PK
+        VARCHAR   name
+        VARCHAR   description
+        NUMERIC   price
+        INT       stock
+    }
+
+    customer {
+        UUID      id PK
+        VARCHAR   first_name
+        VARCHAR   last_name
+        VARCHAR   email
+    }
+
+    transaction {
+        UUID      id PK
+        DECIMAL   amount
+        TIMESTAMP date
+        VARCHAR   status
+        VARCHAR   description
+        UUID      customer_id FK
+    }
+
+    delivery {
+        UUID      id PK
+        VARCHAR   address
+        VARCHAR   city
+        VARCHAR   status
+        UUID      transaction_id FK
+    }
+
+    %% Relaciones
+    customer     ||--o{ transaction : "1 cliente genera N transacciones"
+    transaction  ||--|{ delivery    : "1 transacción puede tener varios envíos"
+    transaction  }o--o{ product     : "N:M productos‑transacción"
 ```
 
 **Características principales:**
 
 - **Hexagonal / Ports & Adapters**: cada módulo (product, transaction, etc.) mantiene las carpetas domain, dto, ports y adapters.
-- **WompiModule** encapsula toda la integración externa.
+- **WModule** encapsula toda la integración externa.
 - **PostgreSQL 15** corre en su propio contenedor (db).
 - **Docker multi-stage** compila TypeScript y genera una imagen ultraligera.
 
@@ -53,12 +92,12 @@ src/
  │   ├─ transaction/
  │   ├─ customer/
  │   ├─ delivery/
- │   └─ wompi/
+ │   └─ w/
  │       ├─ adapters/
  │       ├─ dto/
  │       ├─ ports/
- │       ├─ wompi.service.ts
- │       └─ wompi.module.ts
+ │       ├─ w.service.ts
+ │       └─ w.module.ts
  ├─ app.module.ts
  └─ main.ts
 ```
@@ -106,20 +145,20 @@ docker-compose exec api npm run migration:run  # Ejecutar migraciones
 | API Nest | 3000 |
 | PostgreSQL | 5432 |
 
-## Flujo de pago con Wompi
+## Flujo de pago
 
 ```mermaid
 sequenceDiagram
   participant Front
   participant API
-  participant Wompi
+  participant W
   Front->>API: POST /transactions + datos tarjeta
-  API->>Wompi: GET /merchants → acceptance_token
-  API->>Wompi: POST /tokens/cards → card_token
-  API->>Wompi: POST /transactions (pago)
-  Wompi-->>API: status = PENDING
+  API->>W: GET /merchants → acceptance_token
+  API->>W: POST /tokens/cards → card_token
+  API->>W: POST /transactions (pago)
+  W-->>API: status = PENDING
   API-->>Front: respuesta pending
-  Wompi-->>API: webhook /webhooks/wompi (APPROVED)
+  W-->>API: webhook /webhooks/w (APPROVED)
   API-->>API: actualiza BD → approved
 ```
 
@@ -127,8 +166,8 @@ sequenceDiagram
 
 ```bash
 # 1️⃣ Tokenizar tarjeta
-curl -X POST "$WOMPI_BASE_URL/tokens/cards" \
-  -H "Authorization: Bearer $WOMPI_PUBLIC_KEY" \
+curl -X POST "$W_BASE_URL/tokens/cards" \
+  -H "Authorization: Bearer $W_PUBLIC_KEY" \
   -H "Content-Type: application/json" \
   -d '{"number":"4242424242424242","cvc":"123","exp_month":"12","exp_year":"25","card_holder":"Test"}'
 
@@ -166,9 +205,24 @@ docker-compose exec api npm run seed                            # Insertar demo
 
 ## Pruebas y calidad
 
-- **Jest + Supertest** para unitarias y e2e
-- **ESLint & Prettier** con husky + lint‑staged en pre‑commit
-- **(Opcional)** SonarQube / SonarCloud para cobertura y análisis estático
+Nuestro pipeline de calidad incluye:
+
+| Herramienta | Propósito | Comando |
+|-------------|-----------|---------|
+| **Jest** + **Supertest** | Unitarias y End‑to‑End | `npm run test` |
+| **ts‑jest** | Transpilación TypeScript en tests | autom. |
+| **eslint** + **prettier** | Estilo y reglas estáticas | `npm run lint` |
+| **husky** / **lint‑staged** | Ejecuta `lint` + `test` antes de cada commit | ganchos Git |
+| **coverage** | Informe Cobertura → `coverage/lcov-report` | `npm run test:cov` |
+
+> Ejecución típica en CI  
+> `npm ci && npm run lint && npm run test -- --runInBand`
+
+### Interpretar resultados
+
+```txt
+Test Suites: 2 failed, 27 passed, 29 total
+Tests:       3 failed, 157 passed, 160 total
 
 ## Licencia
 

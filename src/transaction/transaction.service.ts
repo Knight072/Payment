@@ -11,9 +11,9 @@ import { CreateCustomerDto } from '../customer/dto/create-customer.dto';
 import { CreateDeliveryDto } from '../delivery/dto/create-delivery.dto';
 import { UpdateProductDto } from '../product/dto/update-product.dto';
 
-//import { WompiService } from '../wompi/wompi.service';
-import { CreateCardTokenDto } from '../wompi/dto/create-card-token.dto';
-import { CreatePaymentDto } from '../wompi/dto/create-payment.dto';
+//import { WService } from '../api/w.service';
+//import { CreateCardTokenDto } from '../api/dto/create-card-token.dto';
+//import { CreatePaymentDto } from '../api/dto/create-payment.dto';
 
 @Injectable()
 export class TransactionService {
@@ -30,7 +30,7 @@ export class TransactionService {
     @Inject('ProductRepositoryPort')
     private readonly productRepo: ProductRepositoryPort,
 
-    //private readonly wompiService: WompiService,
+    //private readonly wService: WiService,
   ) { }
 
   /**
@@ -52,7 +52,7 @@ export class TransactionService {
   }
 
   /**
-   * Crea una nueva transacción y procesa el pago en Wompi
+   * Crea una nueva transacción y procesa el pago en api
    */
   async create(dto: CreateTransactionDto) {
     // 0) Validar y descontar stock...
@@ -97,7 +97,7 @@ export class TransactionService {
     const delivery = await this.deliveryRepo.create(deliveryDto);
 
     // 2) Obtener acceptance_token
-    /*const acceptanceToken = await this.wompiService.getAcceptanceToken();
+    /*const acceptanceToken = await this.wService.getAcceptanceToken();
 
     // 3) Tokenizar tarjeta si no viene cardToken
     let cardToken = dto.cardToken;
@@ -109,7 +109,7 @@ export class TransactionService {
         exp_year: dto.cardExpYear!,
         card_holder: dto.customerEmail,
       };
-      cardToken = await this.wompiService.tokenizeCard(cardDto);
+      cardToken = await this.wService.tokenizeCard(cardDto);
     }
 
     // 4) Preparar DTO de pago
@@ -125,13 +125,13 @@ export class TransactionService {
       },
     };
 
-    // 5) Llamar a Wompi y manejar errores
+    // 5) Llamar a W y manejar errores
     let resp;
     try {
-      resp = await this.wompiService.createPayment(payDto);
+      resp = await this.wService.createPayment(payDto);
     } catch (err) {
       await this.transactionRepo.update(pending.id, { status: 'cancelled' });
-      throw new Error(`Error procesando pago en Wompi: ${err.message}`);
+      throw new Error(`Error procesando pago en W: ${err.message}`);
     }
 
     // 6) Actualizar estado según la respuesta

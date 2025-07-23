@@ -16,7 +16,7 @@ describe('TransactionController', () => {
     const mockDate = new Date('2025-07-22T19:29:02.591Z')
     const sampleTx: Transaction = new Transaction(
         'b91d87b0-11f0-4eec-8e40-f057e57254c7',
-        'Taza Wompi×1',
+        'Taza W×1',
         32000,
         mockDate,
         'pending',
@@ -75,7 +75,7 @@ describe('TransactionController', () => {
             phone: '3015551111',
             address: 'Calle 123',
             scheduledDate: sampleTx.date.toISOString(),
-            items: [{ name: 'Taza Wompi', quantity: 1 }],
+            items: [{ name: 'Taza W', quantity: 1 }],
             cardNumber: '4111111111111111',
             cardCvc: '123',
             cardExpMonth: '11',

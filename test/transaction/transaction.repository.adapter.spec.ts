@@ -7,7 +7,7 @@ import { UpdateTransactionDto } from '../../src/transaction/dto/update-transacti
 
 const sampleEntity: TransactionEntity = {
     id: 'b91d87b0-11f0-4eec-8e40-f057e57254c7',
-    description: 'Taza Wompi×1',
+    description: 'Taza W×1',
     amount: 32000,
     date: new Date('2025-07-22T19:29:02.591Z'),
     status: 'completed',
@@ -92,7 +92,7 @@ describe('TransactionRepositoryAdapter', () => {
             scheduledDate: new Date().toISOString(),
 
             // Ítems
-            items: [{ name: 'Taza Wompi', quantity: 1 }],
+            items: [{ name: 'Taza W', quantity: 1 }],
 
             // Tarjeta (opcional)
             cardNumber: '4111111111111111',

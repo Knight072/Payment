@@ -5,7 +5,7 @@ import { CreateProductDto } from '../../src/product/dto/create-product.dto'
 
 describe('CreateProductDto', () => {
     const base: CreateProductDto = {
-        name: 'Taza Wompi',
+        name: 'Taza W',
         description: 'Taza mágica color negro',
         price: 25000,
         stock: 5,

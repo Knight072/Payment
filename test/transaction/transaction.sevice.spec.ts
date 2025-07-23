@@ -42,7 +42,7 @@ function mockProductRepo() {
 const mockDate  = new Date('2025-07-22T19:29:02.591Z')
 const sampleTx  = new Transaction(
   'tx-1',
-  'Taza Wompi×1',
+  'Taza W×1',
   32000,
   mockDate,
   'pending',
@@ -60,11 +60,11 @@ const createDto: CreateTransactionDto = {
   phone:         '3015551234',
   address:       'Calle 123',
   scheduledDate: mockDate.toISOString(),
-  items:         [{ name: 'Taza Wompi', quantity: 1 }],
+  items:         [{ name: 'Taza W', quantity: 1 }],
 }
 
 const productsMock = [
-  { id: 1, name: 'Taza Wompi', stock: 5 },
+  { id: 1, name: 'Taza W', stock: 5 },
 ]
 
 /* -------------------------------------------------------------- */
@@ -148,7 +148,7 @@ describe('TransactionService', () => {
     })
 
     it('lanza BadRequestException si stock insuficiente', async () => {
-      productRepo.findAll.mockResolvedValue([{ id: 1, name: 'Taza Wompi', stock: 0 }])
+      productRepo.findAll.mockResolvedValue([{ id: 1, name: 'Taza W', stock: 0 }])
 
       await expect(service.create(createDto)).rejects.toBeInstanceOf(BadRequestException)
       expect(txRepo.create).not.toHaveBeenCalled()

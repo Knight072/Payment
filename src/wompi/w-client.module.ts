@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { WompiClientPort }    from './ports/wompi-client.port';
-import { WompiClientAdapter } from './adapters/wompi-client.adapter';
-import { WompiService }       from './wompi.service';
+import { WClientPort }    from './ports/w-client.port';
+import { WClientAdapter } from './adapters/w-client.adapter';
+import { WService }       from './w.service';
 
 @Module({
   imports: [
@@ -13,21 +13,21 @@ import { WompiService }       from './wompi.service';
       imports: [ConfigModule],
       inject:  [ConfigService],
       useFactory: (cs: ConfigService) => ({
-        baseURL: cs.get<string>('WOMPI_BASE_URL'),
+        baseURL: cs.get<string>('W_BASE_URL'),
         headers: {
-          Authorization: `Bearer ${cs.get<string>('WOMPI_PRIVATE_KEY')}`,
+          Authorization: `Bearer ${cs.get<string>('W_PRIVATE_KEY')}`,
           'Content-Type': 'application/json',
         },
       }),
     }),
   ],
   providers: [
-    { provide: WompiClientPort, useClass: WompiClientAdapter },
-    WompiService,
+    { provide: WClientPort, useClass: WClientAdapter },
+    WService,
   ],
   exports: [
-    WompiClientPort,
-    WompiService,
+    WClientPort,
+    WService,
   ],
 })
-export class WompiModule {}
+export class WModule {}

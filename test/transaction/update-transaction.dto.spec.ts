@@ -15,7 +15,7 @@ describe('UpdateTransactionDto', () => {
 
     it('acepta actualizar solo la cantidad de un ítem', async () => {
         const dto = plainToInstance(UpdateTransactionDto, {
-            items: [{ name: 'Taza Wompi', quantity: 2 }],
+            items: [{ name: 'Taza W', quantity: 2 }],
         })
 
         const errs = await validate(dto)

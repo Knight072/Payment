@@ -24,10 +24,10 @@ export default () => ({
     expiresIn: process.env.JWT_EXPIRES_IN ?? '3600s',
   },
 
-  // Wompi
-  wompi: {
-    baseUrl: process.env.WOMPI_BASE_URL!,
-    privateKey: process.env.WOMPI_PRIVATE_KEY!,
-    publicKey: process.env.WOMPI_PUBLIC_KEY!,
+  // api
+  w: {
+    baseUrl: process.env.W_BASE_URL!,
+    privateKey: process.env.W_PRIVATE_KEY!,
+    publicKey: process.env.W_PUBLIC_KEY!,
   },
 });

@@ -23,7 +23,7 @@ describe('ProductController', () => {
     // muestra de producto
     const sampleProduct = new Product(
         'f88f7d0e-793b-4902-b3bb-d2b7d2f4e123',
-        'Taza Wompi',
+        'Taza W',
         'Taza mágica color negro',
         25000,
         5,
@@ -63,7 +63,7 @@ describe('ProductController', () => {
     /* ------------------------------------------------------------ */
     it('create() delega en service.create()', async () => {
         const dto: CreateProductDto = {
-            name: 'Camiseta Wompi',
+            name: 'Camiseta W',
             description: 'Ed. limitada',
             price: 59000,
             stock: 10,

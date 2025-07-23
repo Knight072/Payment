@@ -6,7 +6,7 @@ describe('Product domain model', () => {
   const base = () =>
     new Product(
       'f88f7d0e-793b-4902-b3bb-d2b7d2f4e123',
-      'Taza Wompi',
+      'Taza W',
       'Taza mágica color negro',
       25_000,
       5,
@@ -15,7 +15,7 @@ describe('Product domain model', () => {
   /* ---------------- constructor / validate ---------------------- */
   it('crea el producto con datos válidos', () => {
     const prod = base()
-    expect(prod.name).toBe('Taza Wompi')
+    expect(prod.name).toBe('Taza W')
     expect(prod.price).toBe(25_000)
     expect(prod.stock).toBe(5)
   })

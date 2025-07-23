@@ -18,7 +18,7 @@ function mockRepo() {
 
 const sampleProduct = new Product(
   'f88f7d0e-793b-4902-b3bb-d2b7d2f4e123',
-  'Taza Wompi',
+  'Taza W',
   'Taza mágica color negro',
   25_000,
   5,
@@ -73,7 +73,7 @@ describe('ProductService', () => {
   /* -------------------------------------------------------------- */
   it('create() delega en repo.create()', async () => {
     const dto: CreateProductDto = {
-      name: 'Camiseta Wompi',
+      name: 'Camiseta W',
       description: 'Ed. limitada',
       price: 59_000,
       stock: 10,

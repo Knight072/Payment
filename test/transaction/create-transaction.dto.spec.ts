@@ -6,7 +6,7 @@ import { CreateTransactionDto } from '../../src/transaction/dto/create-transacti
 
 describe('CreateTransactionDto', () => {
     const base: CreateTransactionDto = {
-        description: 'Taza Wompi×1',
+        description: 'Taza W×1',
         amount: 32000,
         date: '2025-07-22T19:29:02.591Z',
         status: 'pending',
@@ -18,7 +18,7 @@ describe('CreateTransactionDto', () => {
         address: 'Cra 7 #45‑67',
         scheduledDate: '2025-07-23T10:00:00.000Z',
         items: [
-            { name: 'Taza Wompi', quantity: 1 },
+            { name: 'Taza W', quantity: 1 },
         ],
         cardNumber: '4111111111111111',
         cardCvc: '123',
@@ -50,7 +50,7 @@ describe('CreateTransactionDto', () => {
     it('falla si quantity es < 1', async () => {
         const dto = plainToInstance(CreateTransactionDto, {
             ...base,
-            items: [{ name: 'Taza Wompi', quantity: 0 }],
+            items: [{ name: 'Taza W', quantity: 0 }],
         })
 
         const errs = await validate(dto)

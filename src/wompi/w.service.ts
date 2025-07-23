@@ -1,21 +1,21 @@
-// src/modules/wompi/wompi.service.ts
+// src/modules/api/w.service.ts
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { WompiClientPort } from './ports/wompi-client.port';
+import { WClientPort } from './ports/w-client.port';
 import { CreateCardTokenDto } from './dto/create-card-token.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Injectable()
-export class WompiService {
+export class WService {
   private publicKey: string;
 
   constructor(
     private readonly config: ConfigService,
-    @Inject(WompiClientPort) private readonly client: WompiClientPort,
+    @Inject(WClientPort) private readonly client: WClientPort,
   ) {
-    const pk = this.config.get<string>('WOMPI_PUBLIC_KEY');
+    const pk = this.config.get<string>('W_PUBLIC_KEY');
     if (!pk) {
-      throw new Error('WOMPI_PUBLIC_KEY no definida en .env');
+      throw new Error('W_PUBLIC_KEY no definida en .env');
     }
     this.publicKey = pk;
   }
@@ -32,7 +32,7 @@ export class WompiService {
     return resp.data.id;
   }
 
-  /** Paso 4: crea el pago y devuelve la respuesta de Wompi */
+  /** Paso 4: crea el pago y devuelve la respuesta de W */
   async createPayment(dto: CreatePaymentDto) {
     return this.client.createPayment(dto);
   }
