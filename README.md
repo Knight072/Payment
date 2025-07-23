@@ -1,97 +1,3 @@
-# 🏦 Wompi Payment API — Backend NestJS  
-_Proyecto Full‑Stack de prueba_
-
-![Nest & PostgreSQL](https://img.shields.io/badge/NestJS-v10-E0234E?logo=nestjs)
-![Postgres](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql)
-![Docker Compose](https://img.shields.io/badge/Docker‑Compose-1.29-blue?logo=docker)
-
----
-
-## Índice
-1. [Arquitectura](#arquitectura)
-2. [Estructura de carpetas](#estructura-de-carpetas)
-3. [Requisitos previos](#requisitos-previos)
-4. [Configuración rápida](#configuración-rápida)
-5. [Arranque en Docker](#arranque-en-docker)
-6. [Flujo de pago con Wompi](#flujo-de-pago-con-wompi)
-7. [Colección cURL / Postman](#colección-curl--postman)
-8. [Tareas npm](#tareas-npm)
-9. [Migraciones y seeds](#migraciones-y-seeds)
-10. [Pruebas y calidad](#pruebas-y-calidad)
-11. [Licencia](#licencia)
-
----
-
-## Arquitectura
-
-```mermaid
-flowchart LR
-    subgraph Hexagonal
-        A[Controllers] -->|DTO| B(Use Cases)
-        B -->|Ports| C{{Repositorios}}
-        B -->|Ports| D(Wompi Service)
-        C -->|Adapters| E[(PostgreSQL)]
-        D -->|HTTP REST| F[Wompi Sandbox]
-    end
-    classDef box fill:#f6f6f6,stroke:#ccc,stroke-width:1px
-    class A,B,C,D,E,F box
-
----
-
-## Estructura de carpetas
-
-```text
-src/
- ├─ modules/
- │   ├─ product/
- │   ├─ transaction/
- │   ├─ customer/
- │   ├─ delivery/
- │   └─ wompi/
- │       ├─ adapters/
- │       ├─ dto/
- │       ├─ ports/
- │       ├─ wompi.service.ts
- │       └─ wompi.module.ts
- ├─ app.module.ts
- └─ main.ts
-
-
-## Requisitos previos
-
-| Herramienta   | Versión mínima |
-|---------------|----------------|
-| **Docker**    | 20.10 |
-| **Docker Compose** | 1.29 |
-| **Node.js** (opcional para desarrollo local) | 18 LTS |
-| **Git**       | 2.30 |
-
-> Si usas Docker para todo, **Node** y **PostgreSQL** locales no son necesarios.
-
----
-
-## Configuración rápida
-
-```bash
-# 1. Clona el proyecto
-git clone https://github.com/<tu‑usuario>/payment-api.git
-cd payment-api
-
-# 2. Copia y edita variables de entorno
-cp .env.example .env        # Rellena llaves y credenciales
-
-# 3. Arranca todo con Docker
-docker-compose up -d --build
-
-
-# Construir y levantar en segundo plano
-docker-compose up -d --build         
-
-# Seguir logs de la API Nest
-docker-compose logs -f api           
-
-# (Opcional) ejecutar migraciones
-docker-compose exec api npm run migration:run
 # 🏦 Wompi Payment API — Backend NestJS  
 _Proyecto Full‑Stack de prueba_
 
@@ -130,6 +36,8 @@ flowchart LR
     classDef box fill:#f6f6f6,stroke:#ccc,stroke-width:1px
     class A,B,C,D,E,F box
 ```
+
+**Características principales:**
 
 - **Hexagonal / Ports & Adapters**: cada módulo (product, transaction, etc.) mantiene las carpetas domain, dto, ports y adapters.
 - **WompiModule** encapsula toda la integración externa.
@@ -265,16 +173,3 @@ docker-compose exec api npm run seed                            # Insertar demo
 ## Licencia
 
 MIT License - Ver [LICENSE](LICENSE) para más detalles.
-
-sequenceDiagram
-  participant Front
-  participant API
-  participant Wompi
-  Front->>API: POST /transactions + datos tarjeta
-  API->>Wompi: GET /merchants → acceptance_token
-  API->>Wompi: POST /tokens/cards → card_token
-  API->>Wompi: POST /transactions
-  Wompi-->>API: status = PENDING
-  API-->>Front: JSON (pending)
-  Wompi-->>API: webhook /webhooks/wompi (APPROVED)
-  API-->>API: actualiza BD → approved
