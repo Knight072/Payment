@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:5173'],    // aquí tu front
+    origin: ['http://localhost:5173', 'https://lemon-pebble-02ff72e0f.1.azurestaticapps.net'],   
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
   });
 
@@ -23,7 +23,7 @@ async function bootstrap() {
 
   // Configuración de Swagger
   const config = new DocumentBuilder()
-    .setTitle('API Wompi FullStack Test')
+    .setTitle('API FullStack Test')
     .setDescription('Documentación de la API')
     .setVersion('1.0')
     .addBearerAuth()
